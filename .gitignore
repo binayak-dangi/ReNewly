@@ -1,0 +1,49 @@
+# ---------- .NET (backend) ----------
+bin/
+obj/
+*.user
+*.suo
+.vs/
+TestResults/
+*.trx
+logs/
+publish/
+appsettings.*.local.json
+
+# ---------- React Native (frontend-mobile) ----------
+node_modules/
+.expo/
+*.jsbundle
+npm-debug.log*
+yarn-error.log*
+coverage/
+.env
+.env.*
+!.env.example
+
+# Android
+frontend-mobile/android/.gradle/
+frontend-mobile/android/app/build/
+frontend-mobile/android/build/
+frontend-mobile/android/local.properties
+frontend-mobile/android/app/google-services.json
+*.keystore
+!debug.keystore
+*.jks
+*.aab
+*.apk
+
+# iOS
+frontend-mobile/ios/Pods/
+frontend-mobile/ios/build/
+frontend-mobile/ios/GoogleService-Info.plist
+
+# ---------- Secrets ----------
+*.pfx
+*.p12
+firebase-service-account*.json
+
+# ---------- OS / editors ----------
+.DS_Store
+Thumbs.db
+.idea/
