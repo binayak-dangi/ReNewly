@@ -1,0 +1,5 @@
+Bash Switch to per-icon imports and re-verify
+IN
+cd "/c/Drive F/Project/Core/Personal/ReNewly/frontend-mobile" && python - <<'EOF'
+import os,re
+root='src'
