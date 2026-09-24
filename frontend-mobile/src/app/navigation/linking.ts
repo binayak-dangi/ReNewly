@@ -3,7 +3,7 @@ import type { RootStackParamList } from './types';
 
 /**
  * Deep links, used by push notifications (data.deepLink = "renewly://subscriptions/{id}").
- * The scheme is registered in android/app/src/main/AndroidManifest.xml.
+ * The scheme is registered as expo.scheme in app.json.
  */
 export const linking: LinkingOptions<RootStackParamList> = {
   prefixes: ['renewly://'],

@@ -44,8 +44,8 @@ What Renewly does **not** do:
 | Production Android bundle | Builds (2.5 MB) |
 | API contract | Every response shape the app uses was compared against the running backend: 18 of 18 match |
 
-The app has not yet been run on an Android emulator or a phone. That needs JDK 17 and Android Studio,
-covered in [How to run](#how-to-run-the-app).
+The mobile app is an Expo project, so it runs on a real phone through the **Expo Go** app. You don't need
+Android Studio. See [How to run](#how-to-run-the-app).
 
 ---
 
@@ -92,8 +92,9 @@ covered in [How to run](#how-to-run-the-app).
 
 ### Stage 7: push notifications on the phone
 - [ ] Create a Firebase project and add an Android app with package `com.bynqora.renewly`.
-- [ ] Put `google-services.json` in `frontend-mobile/android/app/` (it is git-ignored).
+- [ ] Put `google-services.json` in `frontend-mobile/` (git-ignored) and point `expo.android.googleServicesFile` in `app.json` at it.
 - [ ] Add `@react-native-firebase/app` and `@react-native-firebase/messaging` to the app.
+- [ ] Switch from Expo Go to a development build (`npx expo run:android`, or EAS Build), because Expo Go can't receive Firebase push.
 - [ ] Ask for notification permission (Android 13+) and create the `renewal_reminders` channel.
 - [ ] Register the device with `POST /api/v1/devices` after sign-in, and remove it on sign-out.
 - [ ] Open the right screen when a notification is tapped (`renewly://subscriptions/{id}`).
@@ -125,14 +126,10 @@ covered in [How to run](#how-to-run-the-app).
 | [.NET SDK](https://dotnet.microsoft.com/download/dotnet/9.0) | 9.0 | Backend API |
 | SQL Server | 2019 or later (Developer/Express is fine) | Database |
 | `sqlcmd` | any recent | Running the seed scripts |
-| [Node.js](https://nodejs.org/) | 22.11 or later | Mobile app |
-| JDK | 17 | Android build |
-| [Android Studio](https://developer.android.com/studio) | latest | Android SDK (API 36), emulator |
+| [Node.js](https://nodejs.org/) | 22.11 or later | Mobile app's bundler |
+| **Expo Go** on your phone | latest, from the Play Store or App Store | Running the app |
 
-Android Studio setup: install **Android SDK Platform 36** and an emulator image, then set the
-`ANDROID_HOME` environment variable. See React Native's
-[environment setup guide](https://reactnative.dev/docs/set-up-your-environment?platform=android)
-(choose Windows → Android).
+The phone and the PC must be on the **same Wi-Fi network**.
 
 ### 2. Start the backend
 
@@ -151,8 +148,9 @@ dotnet ef database update --project Renewly.Infrastructure --startup-project Ren
 sqlcmd -S localhost -U <sql-user> -P <sql-password> -C -I -d RenewlyDb -i Database\ScriptTracker\001_Seed_SubscriptionPlans.sql
 sqlcmd -S localhost -U <sql-user> -P <sql-password> -C -I -d RenewlyDb -i Database\ScriptTracker\002_Seed_SubscriptionServices.sql
 
-# Run the API (the reminder worker starts with it)
-dotnet run --project Renewly.Api --launch-profile http
+# Run the API (the reminder worker starts with it).
+# --urls http://0.0.0.0:5080 lets the phone reach it over Wi-Fi, not just this PC.
+dotnet run --project Renewly.Api --launch-profile http --urls http://0.0.0.0:5080
 ```
 
 Check it's up:
@@ -164,26 +162,32 @@ Check it's up:
 
 ### 3. Start the mobile app
 
-In a second terminal:
+**One-time:** allow ports **8081** (the app's bundler) and **5080** (the API) through Windows Firewall
+for private networks. In an administrator PowerShell:
+
+```powershell
+New-NetFirewallRule -DisplayName "Renewly Expo (8081)" -Direction Inbound -Protocol TCP -LocalPort 8081 -Action Allow -Profile Private
+New-NetFirewallRule -DisplayName "Renewly API (5080)" -Direction Inbound -Protocol TCP -LocalPort 5080 -Action Allow -Profile Private
+```
+
+Then, in a second terminal:
 
 ```powershell
 cd frontend-mobile
-npm install
-
-# Terminal A: the JavaScript bundler
+npm install   # first time, and after pulling dependency changes
 npm start
-
-# Terminal B: build and install on the running emulator or a connected phone
-npm run android
 ```
 
-How the app reaches the API:
+A QR code appears in the terminal. Open it on the phone:
+- **Android:** open Expo Go and tap **Scan QR code**.
+- **iPhone:** scan it with the Camera app.
 
-| Where the app runs | What to do |
-|---|---|
-| **Android emulator** | Nothing. The app calls `http://10.0.2.2:5080`, which is the emulator's address for your PC. |
-| **Phone over USB** | Run `adb reverse tcp:5080 tcp:5080`, then set `DEV_API_HOST` to `'localhost'` in `frontend-mobile/src/config/env.ts`. |
-| **Phone over Wi-Fi** | Start the API with `dotnet run --project Renewly.Api --launch-profile http --urls http://0.0.0.0:5080`, set `DEV_API_HOST` to your PC's LAN IP (e.g. `'192.168.1.20'`), and allow port 5080 through Windows Firewall. |
+The app loads over Wi-Fi. When you save a change on the PC, the app on the phone reloads by itself.
+Press `r` in the `npm start` terminal to reload by hand.
+
+**How the app finds the API:** you don't need to set an address. In development the app calls port
+5080 on the same PC it loaded from (see [`src/config/env.ts`](frontend-mobile/src/config/env.ts)). The API
+just has to be started with `--urls http://0.0.0.0:5080`, as in step 2.
 
 ---
 
@@ -222,7 +226,7 @@ npm run lint
 
 | Layer | Technology |
 |---|---|
-| Mobile | React Native 0.87, TypeScript, React Navigation 7, TanStack Query 5 (with offline cache), Zustand, React Hook Form + Zod, Axios, react-native-keychain, Lucide icons |
+| Mobile | Expo SDK 57 (React Native 0.86), TypeScript, React Navigation 7, TanStack Query 5 (with offline cache), Zustand, React Hook Form + Zod, Axios, expo-secure-store, Lucide icons |
 | API | ASP.NET Core 9, Clean Architecture, FluentValidation, Serilog, OpenAPI with the Scalar reference UI |
 | Data | SQL Server, Entity Framework Core 9 migrations, ScriptTracker SQL scripts for reference data |
 | Auth | JWT access tokens (15 min), rotating refresh tokens (30 days) with reuse detection, 6-digit email codes |
@@ -239,8 +243,8 @@ ReNewly/
 │   ├── Renewly.Api/               Controllers, middleware, auth, configuration
 │   ├── Renewly.UnitTests/         xUnit tests
 │   └── Database/ScriptTracker/    Hand-applied SQL scripts for reference data
-└── frontend-mobile/             React Native (TypeScript) Android app
-    ├── android/                   Native Android project (package com.bynqora.renewly)
+└── frontend-mobile/             Expo / React Native (TypeScript) app
+    ├── app.json                   App name, package com.bynqora.renewly, renewly:// scheme, icon
     └── src/
         ├── api/                   Typed API client, endpoints, error handling, query keys
         ├── app/                   App root, navigation, providers, splash
@@ -275,8 +279,9 @@ Pro plan; Google Play Billing will create those rows, so nothing else needs to c
 
 | Problem | Fix |
 |---|---|
-| `npm run android` says the SDK can't be found | Set `ANDROID_HOME` (usually `%LOCALAPPDATA%\Android\Sdk`) and restart the terminal. |
-| The app shows "You're offline" or can't reach the server | Check the API is running (`/health/ready`), and see the table in [step 3](#3-start-the-mobile-app) for the right address. |
+| Expo Go can't connect or keeps loading after scanning | Make sure the phone and PC are on the same Wi-Fi and port 8081 is allowed through the firewall. If the network blocks devices from reaching each other (office or public Wi-Fi), run `npx expo start --tunnel` instead. |
+| Expo Go says the project's SDK version isn't supported | Update Expo Go from the store. The app uses Expo SDK 57. |
+| The app shows "You're offline" or can't reach the server | Check the API was started with `--urls http://0.0.0.0:5080`, port 5080 is allowed through the firewall, and `http://<your PC's IP>:5080/health/ready` opens in the phone's browser. |
 | The service picker only offers "Custom subscription" | The seed scripts haven't been run. Run `001` and `002` from ScriptTracker. |
 | `sqlcmd` fails with a `QUOTED_IDENTIFIER` error | Add the `-I` flag, as shown above. |
 | No verification email arrives | In Development the code is printed in the API console, not emailed. |

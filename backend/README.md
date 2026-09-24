@@ -41,7 +41,8 @@ dotnet test
 
 - API reference (Development only): http://localhost:5080/scalar/v1
 - Health: `/health/live` (process) and `/health/ready` (database)
-- Android emulator base URL: `http://10.0.2.2:5080/api/v1`
+- For the mobile app on a phone (Expo Go), add `--urls http://0.0.0.0:5080` so the API is reachable
+  over Wi-Fi. The app calls `http://<PC's IP>:5080/api/v1`.
 
 In Development, emails are **written to the console log** instead of being sent
 (`Email:Provider = Log`), so verification and reset codes appear in the API output.

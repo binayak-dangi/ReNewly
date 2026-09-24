@@ -1,8 +1,8 @@
-import * as Keychain from 'react-native-keychain';
+import * as SecureStore from 'expo-secure-store';
 import type { IsoDateTime, User } from '../api/types';
 
 /**
- * Persists the long-lived session in the Android Keystore / iOS Keychain.
+ * Persists the long-lived session in the Android Keystore / iOS Keychain (via expo-secure-store).
  * The 15-minute access token is never persisted; it lives in memory only.
  */
 export interface StoredSession {
@@ -12,24 +12,24 @@ export interface StoredSession {
   user: User;
 }
 
-const SERVICE = 'com.bynqora.renewly.session';
-const ACCOUNT = 'renewly';
+const KEY = 'com.bynqora.renewly.session';
+
+const OPTIONS: SecureStore.SecureStoreOptions = {
+  keychainAccessible: SecureStore.WHEN_UNLOCKED_THIS_DEVICE_ONLY,
+};
 
 export const secureSession = {
   async save(session: StoredSession): Promise<void> {
-    await Keychain.setGenericPassword(ACCOUNT, JSON.stringify(session), {
-      service: SERVICE,
-      accessible: Keychain.ACCESSIBLE.WHEN_UNLOCKED_THIS_DEVICE_ONLY,
-    });
+    await SecureStore.setItemAsync(KEY, JSON.stringify(session), OPTIONS);
   },
 
   async load(): Promise<StoredSession | null> {
     try {
-      const entry = await Keychain.getGenericPassword({ service: SERVICE });
-      if (!entry) {
+      const value = await SecureStore.getItemAsync(KEY, OPTIONS);
+      if (!value) {
         return null;
       }
-      const parsed = JSON.parse(entry.password) as StoredSession;
+      const parsed = JSON.parse(value) as StoredSession;
       return parsed.refreshToken && parsed.user ? parsed : null;
     } catch {
       // Corrupt entry or keystore reset (e.g. device lock screen removed): start fresh.
@@ -40,7 +40,7 @@ export const secureSession = {
 
   async clear(): Promise<void> {
     try {
-      await Keychain.resetGenericPassword({ service: SERVICE });
+      await SecureStore.deleteItemAsync(KEY, OPTIONS);
     } catch {
       // Nothing stored.
     }

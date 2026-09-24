@@ -1,4 +1,26 @@
 {
-  "name": "Renewly",
-  "displayName": "Renewly"
+  "expo": {
+    "name": "Renewly",
+    "slug": "renewly",
+    "version": "1.0.0",
+    "scheme": "renewly",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "light",
+    "backgroundColor": "#FFFFFF",
+    "primaryColor": "#0F766E",
+    "android": {
+      "package": "com.bynqora.renewly",
+      "versionCode": 1,
+      "allowBackup": false
+    },
+    "ios": {
+      "bundleIdentifier": "com.bynqora.renewly",
+      "buildNumber": "1"
+    },
+    "plugins": [
+      "expo-secure-store",
+      "expo-status-bar",
+      "@react-native-community/datetimepicker"
+    ]
+  }
 }

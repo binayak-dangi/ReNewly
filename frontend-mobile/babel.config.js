@@ -1,7 +1,10 @@
-module.exports = {
-  presets: ['module:@react-native/babel-preset'],
-  plugins: [
-    // zod v4 uses `export * as ns from '...'`, which the React Native preset does not transform.
-    '@babel/plugin-transform-export-namespace-from',
-  ],
+module.exports = function (api) {
+  api.cache(true);
+  return {
+    presets: ['babel-preset-expo'],
+    plugins: [
+      // zod v4 uses `export * as ns from '...'`; keep the transform explicit.
+      '@babel/plugin-transform-export-namespace-from',
+    ],
+  };
 };

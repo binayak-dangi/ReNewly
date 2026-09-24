@@ -1,22 +1,23 @@
 /* global jest */
 // Native modules are not available in Jest; replace them with in-memory fakes.
 
-jest.mock('@react-native-async-storage/async-storage', () => require('@react-native-async-storage/async-storage/jest'));
+jest.mock('@react-native-async-storage/async-storage', () => require('@react-native-async-storage/async-storage/jest/async-storage-mock'));
 
 jest.mock('@react-native-community/netinfo', () => require('@react-native-community/netinfo/jest/netinfo-mock.js'));
 
 jest.mock('react-native-safe-area-context', () => require('react-native-safe-area-context/jest/mock').default);
 
-jest.mock('react-native-keychain', () => {
+jest.mock('expo-secure-store', () => {
   const store = new Map();
   return {
-    ACCESSIBLE: { WHEN_UNLOCKED_THIS_DEVICE_ONLY: 'AccessibleWhenUnlockedThisDeviceOnly' },
-    setGenericPassword: jest.fn(async (username, password, options) => {
-      store.set(options?.service, { username, password, service: options?.service });
-      return { service: options?.service, storage: 'mock' };
+    WHEN_UNLOCKED_THIS_DEVICE_ONLY: 5,
+    setItemAsync: jest.fn(async (key, value) => {
+      store.set(key, value);
     }),
-    getGenericPassword: jest.fn(async options => store.get(options?.service) ?? false),
-    resetGenericPassword: jest.fn(async options => store.delete(options?.service)),
+    getItemAsync: jest.fn(async key => store.get(key) ?? null),
+    deleteItemAsync: jest.fn(async key => {
+      store.delete(key);
+    }),
     __store: store,
   };
 });
