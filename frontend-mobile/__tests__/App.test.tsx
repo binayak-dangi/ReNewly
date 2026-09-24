@@ -3,9 +3,10 @@ import React from 'react';
 import App from '../App';
 
 describe('App', () => {
-  it('boots to the welcome screen when there is no stored session', async () => {
+  it('boots to onboarding when there is no stored session', async () => {
     await render(<App />);
 
-    expect(await screen.findByRole('header', { name: 'Welcome' })).toBeTruthy();
+    expect(await screen.findByRole('header', { name: "Know before you're charged." })).toBeTruthy();
+    expect(screen.getByRole('button', { name: 'Create free account' })).toBeTruthy();
   });
 });

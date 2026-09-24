@@ -4,6 +4,9 @@ import { Pressable, StyleSheet, TextInput, TextInputProps, View } from 'react-na
 import { colors, radii, spacing, typography } from '../theme';
 import { AppText } from './AppText';
 
+/** Instance type of a TextInput (for useRef), e.g. to move focus to the next field. */
+export type TextInputHandle = ComponentRef<typeof TextInput>;
+
 export interface TextFieldProps extends Omit<TextInputProps, 'style'> {
   label: string;
   error?: string;
@@ -14,7 +17,7 @@ export interface TextFieldProps extends Omit<TextInputProps, 'style'> {
   /** Content on the right edge, e.g. a currency code. */
   right?: ReactNode;
   /** React 19 passes refs as a normal prop; lets forms move focus to the next field. */
-  ref?: Ref<ComponentRef<typeof TextInput>>;
+  ref?: Ref<TextInputHandle>;
 }
 
 export function TextField({

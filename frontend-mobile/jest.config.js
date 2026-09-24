@@ -1,6 +1,8 @@
 module.exports = {
   preset: '@react-native/jest-preset',
   setupFiles: ['<rootDir>/jest.setup.js'],
+  // The first run after a cache clear transforms every dependency; avoid spurious 5s timeouts.
+  testTimeout: 20000,
   moduleNameMapper: {
     // Per-icon imports (src/components/icons.ts) ship as .mjs; icons are irrelevant in unit tests.
     '^lucide-react-native/icons/.*$': '<rootDir>/jest/lucideIconStub.js',

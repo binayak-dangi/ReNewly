@@ -3,6 +3,7 @@ import { CalendarDays, ChartPie, CircleUser, House, Layers, LucideIcon } from '.
 import React from 'react';
 import { StyleSheet } from 'react-native';
 import { colors, typography } from '../../theme';
+import { DashboardScreen } from '../../features/dashboard/DashboardScreen';
 import { placeholder } from './PlaceholderScreen';
 import type { MainTabParamList } from './types';
 
@@ -17,7 +18,6 @@ const icons: Record<keyof MainTabParamList, LucideIcon> = {
 };
 
 // Stage 6 replaces the placeholders with the real screens.
-const HomeScreen = placeholder('Home');
 const SubscriptionsScreen = placeholder('Subscriptions');
 const CalendarScreen = placeholder('Calendar');
 const InsightsScreen = placeholder('Insights');
@@ -46,7 +46,7 @@ export function MainTabs() {
         tabBarLabelStyle: styles.label,
         tabBarIcon: tabIcons[route.name],
       })}>
-      <Tab.Screen name="Home" component={HomeScreen} />
+      <Tab.Screen name="Home" component={DashboardScreen} />
       <Tab.Screen name="Subscriptions" component={SubscriptionsScreen} />
       <Tab.Screen name="Calendar" component={CalendarScreen} />
       <Tab.Screen name="Insights" component={InsightsScreen} />

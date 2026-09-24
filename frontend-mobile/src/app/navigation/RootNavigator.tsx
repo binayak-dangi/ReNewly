@@ -3,6 +3,12 @@ import React from 'react';
 import { useAuthStore } from '../../store/authStore';
 import { usePreferencesStore } from '../../store/preferencesStore';
 import { colors, typography } from '../../theme';
+import { ForgotPasswordScreen } from '../../features/auth/screens/ForgotPasswordScreen';
+import { LoginScreen } from '../../features/auth/screens/LoginScreen';
+import { RegisterScreen } from '../../features/auth/screens/RegisterScreen';
+import { ResetPasswordScreen } from '../../features/auth/screens/ResetPasswordScreen';
+import { VerifyEmailScreen } from '../../features/auth/screens/VerifyEmailScreen';
+import { WelcomeScreen } from '../../features/auth/screens/WelcomeScreen';
 import { MainTabs } from './MainTabs';
 import { placeholder } from './PlaceholderScreen';
 import type { RootStackParamList } from './types';
@@ -10,12 +16,6 @@ import type { RootStackParamList } from './types';
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
 // Stage 6 replaces these placeholders with the real screens.
-const WelcomeScreen = placeholder('Welcome');
-const LoginScreen = placeholder('Sign in');
-const RegisterScreen = placeholder('Create account');
-const ForgotPasswordScreen = placeholder('Forgot password');
-const ResetPasswordScreen = placeholder('Reset password');
-const VerifyEmailScreen = placeholder('Verify your email', { showSignOut: true });
 const SubscriptionDetailScreen = placeholder('Subscription');
 const SubscriptionFormScreen = placeholder('Add subscription');
 const ServicePickerScreen = placeholder('Choose a service');
