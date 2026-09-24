@@ -1,97 +1,60 @@
-This is a new [**React Native**](https://reactnative.dev) project, bootstrapped using [`@react-native-community/cli`](https://github.com/react-native-community/cli).
+# Renewly mobile app
 
-# Getting Started
+React Native (TypeScript) Android app for Renewly. For the project overview, status and full setup
+(including the backend), see the [root README](../README.md).
 
-> **Note**: Make sure you have completed the [Set Up Your Environment](https://reactnative.dev/docs/set-up-your-environment) guide before proceeding.
+## Scripts
 
-## Step 1: Start Metro
+| Command | What it does |
+|---|---|
+| `npm start` | Start Metro (the JavaScript bundler) |
+| `npm run android` | Build and install on the running emulator or a connected phone |
+| `npm test` | Run the Jest tests (50) |
+| `npm run typecheck` | TypeScript check (`tsc --noEmit`) |
+| `npm run lint` | ESLint |
 
-First, you will need to run **Metro**, the JavaScript build tool for React Native.
+The app expects the API at `http://10.0.2.2:5080/api/v1` in development (the emulator's address for your PC).
+To use a phone or change the production URL, see [`src/config/env.ts`](src/config/env.ts) and the
+"How the app reaches the API" table in the root README.
 
-To start the Metro dev server, run the following command from the root of your React Native project:
+## Structure
 
-```sh
-# Using npm
-npm start
-
-# OR using Yarn
-yarn start
+```
+src/
+├── api/          client.ts (Axios + token refresh), endpoints.ts, types.ts (mirror the API DTOs),
+│                 errors.ts (ApiError + codes), queryKeys.ts
+├── app/          App.tsx (providers, splash), navigation/ (stack, tabs, deep links, types), providers/
+├── components/   Design system; import icons only from components/icons.ts
+├── features/     One folder per area: auth, dashboard, subscriptions, calendar, insights,
+│                 notifications, account, premium (screens, hooks, schemas, tests)
+├── services/     secureSession (Keychain/Keystore), sessionEvents, billing/ (Google Play seam)
+├── store/        authStore (session state machine), preferencesStore (onboarding, last email)
+├── theme/        Colours, spacing, radii, typography, shadows
+├── utils/        format (money, dates, countdowns), forms (server errors → fields), device
+└── test/         renderWithProviders for screen tests
 ```
 
-## Step 2: Build and run your app
+## Conventions
 
-With Metro running, open a new terminal window/pane from the root of your React Native project, and use one of the following commands to build and run your Android or iOS app:
+- **Data** comes from TanStack Query hooks. After any change to a subscription, invalidate
+  `subscriptionDependentKeys` so the dashboard, calendar and insights refresh too.
+- **Forms** use React Hook Form with a Zod schema that mirrors the server's rules. Use `FormTextField`,
+  and `applyApiErrors()` to put server validation errors under the right fields.
+- **Errors** are always `ApiError`. Show them with `ErrorState` (screens), `FormMessage` (forms) or
+  `toast.error` (actions).
+- **Sessions:**
+  - The refresh token lives in the Keystore; the access token is kept in memory only.
+  - The Axios client refreshes the access token once on a 401 and retries the request.
+  - Sign-out clears the query cache.
+- **Icons** are imported from `src/components/icons.ts` (one file per icon). Importing from the
+  `lucide-react-native` barrel would add every icon to the bundle.
+- **Free/Pro** limits come from `GET /me/plan` (`useMyPlan()`). Pro-only options stay visible, marked with
+  a crown, and lead to the Premium screen.
+- **Accessibility:** every icon-only button needs an `accessibilityLabel`. Touch targets are at least 48 dp.
+  Text uses `AppText` so font scaling stays consistent.
 
-### Android
+## Tests
 
-```sh
-# Using npm
-npm run android
-
-# OR using Yarn
-yarn android
-```
-
-### iOS
-
-For iOS, remember to install CocoaPods dependencies (this only needs to be run on first clone or after updating native deps).
-
-The first time you create a new project, run the Ruby bundler to install CocoaPods itself:
-
-```sh
-bundle install
-```
-
-Then, and every time you update your native dependencies, run:
-
-```sh
-bundle exec pod install
-```
-
-For more information, please visit [CocoaPods Getting Started guide](https://guides.cocoapods.org/using/getting-started.html).
-
-```sh
-# Using npm
-npm run ios
-
-# OR using Yarn
-yarn ios
-```
-
-If everything is set up correctly, you should see your new app running in the Android Emulator, iOS Simulator, or your connected device.
-
-This is one way to run your app — you can also build it directly from Android Studio or Xcode.
-
-## Step 3: Modify your app
-
-Now that you have successfully run the app, let's make changes!
-
-Open `App.tsx` in your text editor of choice and make some changes. When you save, your app will automatically update and reflect these changes — this is powered by [Fast Refresh](https://reactnative.dev/docs/fast-refresh).
-
-When you want to forcefully reload, for example to reset the state of your app, you can perform a full reload:
-
-- **Android**: Press the <kbd>R</kbd> key twice or select **"Reload"** from the **Dev Menu**, accessed via <kbd>Ctrl</kbd> + <kbd>M</kbd> (Windows/Linux) or <kbd>Cmd ⌘</kbd> + <kbd>M</kbd> (macOS).
-- **iOS**: Press <kbd>R</kbd> in iOS Simulator.
-
-## Congratulations! :tada:
-
-You've successfully run and modified your React Native App. :partying_face:
-
-### Now what?
-
-- If you want to add this new React Native code to an existing application, check out the [Integration guide](https://reactnative.dev/docs/integration-with-existing-apps).
-- If you're curious to learn more about React Native, check out the [docs](https://reactnative.dev/docs/getting-started).
-
-# Troubleshooting
-
-If you're having issues getting the above steps to work, see the [Troubleshooting](https://reactnative.dev/docs/troubleshooting) page.
-
-# Learn More
-
-To learn more about React Native, take a look at the following resources:
-
-- [React Native Website](https://reactnative.dev) - learn more about React Native.
-- [Getting Started](https://reactnative.dev/docs/environment-setup) - an **overview** of React Native and how setup your environment.
-- [Learn the Basics](https://reactnative.dev/docs/getting-started) - a **guided tour** of the React Native **basics**.
-- [Blog](https://reactnative.dev/blog) - read the latest official React Native **Blog** posts.
-- [`@facebook/react-native`](https://github.com/facebook/react-native) - the Open Source; GitHub **repository** for React Native.
+Screen tests render one screen inside navigation with a fresh query client
+([`src/test/renderWithProviders.tsx`](src/test/renderWithProviders.tsx)) and mock `src/api/endpoints`.
+Native modules (Keychain, AsyncStorage, NetInfo, date picker, icons) are mocked in [`jest.setup.js`](jest.setup.js).
