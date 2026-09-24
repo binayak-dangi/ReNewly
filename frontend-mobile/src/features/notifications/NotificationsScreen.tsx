@@ -1,6 +1,6 @@
 import { useInfiniteQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import React, { useLayoutEffect, useMemo, useState } from 'react';
-import { ActivityIndicator, FlatList, Pressable, RefreshControl, StyleSheet, View } from 'react-native';
+import { ActivityIndicator, FlatList, Platform, Pressable, RefreshControl, StyleSheet, View } from 'react-native';
 import { notificationsApi } from '../../api/endpoints';
 import { queryKeys } from '../../api/queryKeys';
 import type { AppNotification, NotificationListQuery } from '../../api/types';
@@ -145,7 +145,8 @@ function NotificationRow({ notification: n, onPress }: { notification: AppNotifi
       onPress={onPress}
       accessibilityRole="button"
       accessibilityLabel={`${n.isRead ? '' : 'Unread. '}${n.title}. ${n.body.replace(/\n/g, '. ')}`}
-      style={({ pressed }) => [styles.row, !n.isRead && styles.unread, pressed && styles.pressed]}>
+      android_ripple={{ color: colors.ripple }}
+      style={({ pressed }) => [styles.row, !n.isRead && styles.unread, pressed && Platform.OS === 'ios' && styles.pressed]}>
       <View style={[styles.icon, failed ? styles.iconFailed : null]}>
         <Icon size={18} color={failed ? colors.danger : colors.primary} />
       </View>

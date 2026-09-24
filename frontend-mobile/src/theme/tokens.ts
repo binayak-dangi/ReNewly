@@ -40,6 +40,16 @@ export const colors = {
   skeleton: '#E2E8F0',
   disabled: '#94A3B8',
   disabledSoft: '#F1F5F9',
+  /** Android touch ripple on light and on primary (teal) backgrounds. */
+  ripple: 'rgba(15, 23, 42, 0.08)',
+  rippleOnPrimary: 'rgba(255, 255, 255, 0.24)',
+} as const;
+
+/** Animation timings (ms), shared so screens, toasts and skeletons move at one pace. */
+export const motion = {
+  fast: 150,
+  normal: 220,
+  pulse: 850,
 } as const;
 
 export const spacing = {

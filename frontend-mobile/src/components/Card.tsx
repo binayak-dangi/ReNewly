@@ -1,5 +1,5 @@
 import React, { PropsWithChildren } from 'react';
-import { Pressable, StyleSheet, View, ViewStyle } from 'react-native';
+import { Platform, Pressable, StyleSheet, View, ViewStyle } from 'react-native';
 import { colors, radii, shadows, spacing } from '../theme';
 
 export interface CardProps extends PropsWithChildren {
@@ -27,9 +27,10 @@ export function Card({ children, onPress, accessibilityLabel, padding = 'lg', to
   return (
     <Pressable
       onPress={onPress}
+      android_ripple={{ color: colors.ripple }}
       accessibilityRole="button"
       accessibilityLabel={accessibilityLabel}
-      style={({ pressed }) => [...base, pressed && styles.pressed]}>
+      style={({ pressed }) => [...base, styles.clipRipple, pressed && Platform.OS === 'ios' && styles.pressed]}>
       {children}
     </Pressable>
   );
@@ -48,4 +49,6 @@ const styles = StyleSheet.create({
     borderColor: colors.primaryMuted,
   },
   pressed: { opacity: 0.85 },
+  // Clip the Android ripple to the rounded corners (on iOS this would also clip the shadow).
+  clipRipple: Platform.OS === 'android' ? { overflow: 'hidden' } : {},
 });

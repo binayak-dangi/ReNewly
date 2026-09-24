@@ -1,5 +1,5 @@
 import React from 'react';
-import { Pressable, StyleSheet, View } from 'react-native';
+import { Platform, Pressable, StyleSheet, View } from 'react-native';
 import { colors, radii, spacing } from '../theme';
 import { AppText } from './AppText';
 import { Crown, LucideIcon } from './icons';
@@ -20,13 +20,14 @@ export function Chip({ label, selected = false, onPress, disabled, locked, icon:
     <Pressable
       onPress={onPress}
       disabled={disabled}
+      android_ripple={{ color: selected ? colors.rippleOnPrimary : colors.ripple }}
       accessibilityRole="button"
       accessibilityLabel={locked ? `${label}, Pro feature` : label}
       accessibilityState={{ selected, disabled: !!disabled }}
       style={({ pressed }) => [
         styles.chip,
         selected ? styles.selected : styles.unselected,
-        pressed && !selected && styles.pressed,
+        pressed && !selected && Platform.OS === 'ios' && styles.pressed,
         disabled && styles.disabled,
       ]}>
       {Icon ? <Icon size={16} color={fg} /> : null}
@@ -73,6 +74,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: spacing.md,
     borderRadius: radii.pill,
     borderWidth: 1,
+    overflow: 'hidden', // clips the ripple to the pill shape
   },
   selected: { backgroundColor: colors.primary, borderColor: colors.primary },
   unselected: { backgroundColor: colors.background, borderColor: colors.border },

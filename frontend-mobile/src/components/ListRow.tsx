@@ -1,6 +1,6 @@
 import { ChevronRight, LucideIcon } from './icons';
 import React, { ReactNode } from 'react';
-import { Pressable, StyleSheet, View } from 'react-native';
+import { Platform, Pressable, StyleSheet, View } from 'react-native';
 import { colors, radii, spacing, touchTarget } from '../theme';
 import { AppText } from './AppText';
 
@@ -65,10 +65,11 @@ export function ListRow({
   return (
     <Pressable
       onPress={onPress}
+      android_ripple={{ color: colors.ripple }}
       accessibilityRole="button"
       accessibilityLabel={subtitle ? `${title}, ${subtitle}` : title}
       accessibilityHint={accessibilityHint}
-      style={({ pressed }) => [styles.row, pressed && styles.pressed]}>
+      style={({ pressed }) => [styles.row, pressed && Platform.OS === 'ios' && styles.pressed]}>
       {content}
     </Pressable>
   );

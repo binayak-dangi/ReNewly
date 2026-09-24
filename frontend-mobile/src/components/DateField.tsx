@@ -50,7 +50,12 @@ export function DateField({ label, value, onChange, minimumDate, maximumDate, er
         accessibilityRole="button"
         accessibilityLabel={`${label}: ${value ? formatDate(value, 'MMMM d, yyyy') : 'not set'}`}
         accessibilityHint="Opens a date picker"
-        style={({ pressed }) => [styles.field, error ? styles.fieldError : null, pressed && styles.pressed]}>
+        android_ripple={{ color: colors.ripple }}
+        style={({ pressed }) => [
+          styles.field,
+          error ? styles.fieldError : null,
+          pressed && Platform.OS === 'ios' && styles.pressed,
+        ]}>
         <CalendarDays size={20} color={colors.textMuted} />
         <AppText tone={value ? 'default' : 'muted'} style={styles.flex}>
           {value ? formatDate(value, 'EEE, MMM d, yyyy') : 'Select a date'}

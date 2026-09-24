@@ -1,5 +1,5 @@
 import React from 'react';
-import { Alert, Pressable, StyleSheet, View } from 'react-native';
+import { Alert, Platform, Pressable, StyleSheet, View } from 'react-native';
 import type { TabScreenProps } from '../../app/navigation/types';
 import {
   AppText,
@@ -210,7 +210,8 @@ export function DashboardScreen({ navigation }: TabScreenProps<'Home'>) {
           onPress={addSubscription}
           accessibilityRole="button"
           accessibilityLabel="Add subscription"
-          style={({ pressed }) => [styles.fab, pressed && styles.fabPressed]}>
+          android_ripple={{ color: colors.rippleOnPrimary, borderless: true }}
+          style={({ pressed }) => [styles.fab, pressed && Platform.OS === 'ios' && styles.fabPressed]}>
           <Plus size={26} color={colors.onPrimary} strokeWidth={2.4} />
         </Pressable>
       ) : null}

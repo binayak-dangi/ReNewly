@@ -43,6 +43,10 @@ export function RootNavigator() {
         headerStyle: { backgroundColor: colors.background },
         contentStyle: { backgroundColor: colors.surface },
         headerBackButtonDisplayMode: 'minimal',
+        // Same slide on Android as on iOS (Android's default is a fade-and-zoom).
+        animation: 'slide_from_right',
+        // Screens underneath stop re-rendering (e.g. on background refetches) while covered.
+        freezeOnBlur: true,
       }}>
       {status === 'signedOut' ? (
         <Stack.Group screenOptions={{ headerShown: false }}>
@@ -68,7 +72,8 @@ export function RootNavigator() {
             <Stack.Screen name="DeleteAccount" component={DeleteAccountScreen} options={{ title: 'Delete account' }} />
             <Stack.Screen name="About" component={AboutScreen} options={{ title: 'About Renewly' }} />
           </Stack.Group>
-          <Stack.Group screenOptions={{ presentation: 'modal' }}>
+          {/* Android has no native sheet, so slide these up to read as a modal there too. */}
+          <Stack.Group screenOptions={{ presentation: 'modal', animation: 'slide_from_bottom' }}>
             <Stack.Screen name="SubscriptionForm" component={SubscriptionFormScreen} options={{ title: 'Add subscription' }} />
             <Stack.Screen name="ServicePicker" component={ServicePickerScreen} options={{ title: 'Choose a service' }} />
             <Stack.Screen name="Premium" component={PremiumScreen} options={{ title: 'Renewly Pro' }} />

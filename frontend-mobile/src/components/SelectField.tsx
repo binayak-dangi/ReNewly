@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from 'react';
-import { FlatList, Modal, Pressable, StyleSheet, TextInput, View } from 'react-native';
+import { FlatList, Modal, Platform, Pressable, StyleSheet, TextInput, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { colors, radii, spacing, typography } from '../theme';
 import { AppText } from './AppText';
@@ -63,10 +63,11 @@ export function SelectField({
         accessibilityRole="button"
         accessibilityLabel={`${label}: ${selected?.label ?? 'not selected'}`}
         accessibilityHint="Opens a list of options"
+        android_ripple={{ color: colors.ripple }}
         style={({ pressed }) => [
           styles.field,
           error ? styles.fieldError : null,
-          pressed && styles.pressed,
+          pressed && Platform.OS === 'ios' && styles.pressed,
           disabled && styles.disabled,
         ]}>
         <AppText tone={selected ? 'default' : 'muted'} style={styles.flex} numberOfLines={1}>
@@ -118,7 +119,8 @@ export function SelectField({
                   }}
                   accessibilityRole="button"
                   accessibilityState={{ selected: isSelected }}
-                  style={({ pressed }) => [styles.option, pressed && styles.pressed]}>
+                  android_ripple={{ color: colors.ripple }}
+                  style={({ pressed }) => [styles.option, pressed && Platform.OS === 'ios' && styles.pressed]}>
                   <View style={styles.flex}>
                     <AppText variant={isSelected ? 'bodyStrong' : 'body'}>{item.label}</AppText>
                     {item.description ? (

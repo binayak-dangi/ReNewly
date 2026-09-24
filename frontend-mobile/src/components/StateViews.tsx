@@ -1,8 +1,8 @@
 import { CloudOff, LucideIcon, TriangleAlert } from './icons';
-import React from 'react';
-import { ActivityIndicator, DimensionValue, StyleSheet, View, ViewStyle } from 'react-native';
+import React, { useEffect } from 'react';
+import { ActivityIndicator, Animated, DimensionValue, Easing, StyleSheet, View, ViewStyle } from 'react-native';
 import { toApiError } from '../api/errors';
-import { colors, radii, spacing } from '../theme';
+import { colors, motion, radii, spacing } from '../theme';
 import { AppText } from './AppText';
 import { Button } from './Button';
 
@@ -96,7 +96,39 @@ export function LoadingState({ message, style }: { message?: string; style?: Vie
   );
 }
 
-/** Static placeholder block that mirrors the shape of content while it loads. */
+/**
+ * One pulse shared by every skeleton on screen, so they breathe in sync and only one animation runs
+ * (on the native thread). It starts with the first mounted skeleton and stops with the last.
+ */
+const pulse = new Animated.Value(1);
+let pulseUsers = 0;
+let pulseLoop: Animated.CompositeAnimation | null = null;
+
+function useSharedPulse() {
+  useEffect(() => {
+    pulseUsers += 1;
+    if (pulseUsers === 1) {
+      pulseLoop = Animated.loop(
+        Animated.sequence([
+          Animated.timing(pulse, { toValue: 0.45, duration: motion.pulse, easing: Easing.inOut(Easing.ease), useNativeDriver: true }),
+          Animated.timing(pulse, { toValue: 1, duration: motion.pulse, easing: Easing.inOut(Easing.ease), useNativeDriver: true }),
+        ]),
+      );
+      pulseLoop.start();
+    }
+    return () => {
+      pulseUsers -= 1;
+      if (pulseUsers === 0) {
+        pulseLoop?.stop();
+        pulseLoop = null;
+        pulse.setValue(1);
+      }
+    };
+  }, []);
+  return pulse;
+}
+
+/** Pulsing placeholder block that mirrors the shape of content while it loads. */
 export function Skeleton({
   width = '100%',
   height = 16,
@@ -108,11 +140,12 @@ export function Skeleton({
   radius?: number;
   style?: ViewStyle;
 }) {
+  const opacity = useSharedPulse();
   return (
-    <View
+    <Animated.View
       accessibilityElementsHidden
       importantForAccessibility="no-hide-descendants"
-      style={[{ width, height, borderRadius: radius, backgroundColor: colors.skeleton }, style]}
+      style={[{ width, height, borderRadius: radius, backgroundColor: colors.skeleton, opacity }, style]}
     />
   );
 }

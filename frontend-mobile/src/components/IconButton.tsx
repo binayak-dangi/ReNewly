@@ -1,6 +1,6 @@
 import type { LucideIcon } from './icons';
 import React from 'react';
-import { Pressable, PressableProps, StyleSheet, View } from 'react-native';
+import { Platform, Pressable, PressableProps, StyleSheet, View } from 'react-native';
 import { colors, radii, touchTarget } from '../theme';
 import { AppText } from './AppText';
 
@@ -20,7 +20,8 @@ export function IconButton({ icon: Icon, color = colors.text, size = 22, badgeCo
       {...rest}
       accessibilityRole="button"
       hitSlop={4}
-      style={({ pressed }) => [styles.button, pressed && styles.pressed]}>
+      android_ripple={{ color: colors.ripple, borderless: true, radius: touchTarget / 2 }}
+      style={({ pressed }) => [styles.button, pressed && Platform.OS === 'ios' && styles.pressed]}>
       <Icon size={size} color={color} strokeWidth={2} />
       {badgeCount ? (
         <View style={styles.badge} accessibilityElementsHidden importantForAccessibility="no">

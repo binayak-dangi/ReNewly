@@ -1,8 +1,11 @@
 import type { LucideIcon } from './icons';
 import React from 'react';
-import { ActivityIndicator, Pressable, PressableProps, StyleSheet, View, ViewStyle } from 'react-native';
+import { ActivityIndicator, Platform, Pressable, PressableProps, StyleSheet, View, ViewStyle } from 'react-native';
 import { colors, radii, spacing, touchTarget } from '../theme';
 import { AppText } from './AppText';
+
+/** Android draws a native ripple; iOS keeps the pressed background colour. */
+const RIPPLE = Platform.OS === 'android';
 
 export type ButtonVariant = 'primary' | 'secondary' | 'outline' | 'ghost' | 'danger';
 
@@ -50,6 +53,7 @@ export function Button({
     <Pressable
       {...rest}
       disabled={isDisabled}
+      android_ripple={{ color: variant === 'primary' ? colors.rippleOnPrimary : colors.ripple }}
       accessibilityRole="button"
       accessibilityLabel={title}
       accessibilityHint={accessibilityHint}
@@ -59,7 +63,7 @@ export function Button({
         size === 'lg' ? styles.lg : styles.md,
         fullWidth ? styles.fullWidth : styles.inline,
         {
-          backgroundColor: isDisabled && variant === 'primary' ? colors.disabled : pressed ? v.bgPressed : v.bg,
+          backgroundColor: isDisabled && variant === 'primary' ? colors.disabled : pressed && !RIPPLE ? v.bgPressed : v.bg,
           borderColor: v.border ?? 'transparent',
           borderWidth: v.border ? StyleSheet.hairlineWidth * 2 : 0,
           opacity: isDisabled && variant !== 'primary' ? 0.55 : 1,
@@ -83,6 +87,7 @@ export function Button({
 const styles = StyleSheet.create({
   base: {
     borderRadius: radii.md,
+    overflow: 'hidden', // clips the ripple to the rounded corners
     alignItems: 'center',
     justifyContent: 'center',
     paddingHorizontal: spacing.xl,

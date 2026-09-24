@@ -1,5 +1,5 @@
 import React from 'react';
-import { Pressable, StyleSheet, Switch, View } from 'react-native';
+import { Platform, Pressable, StyleSheet, Switch, View } from 'react-native';
 import { colors, spacing } from '../theme';
 import { AppText } from './AppText';
 import { Crown, LucideIcon } from './icons';
@@ -26,7 +26,8 @@ export function SwitchRow({ title, description, value, onValueChange, icon: Icon
       accessibilityLabel={locked ? `${title}, Pro feature` : title}
       accessibilityHint={description}
       accessibilityState={{ checked: value && !locked, disabled: !!disabled }}
-      style={({ pressed }) => [styles.row, pressed && styles.pressed]}>
+      android_ripple={{ color: colors.ripple }}
+      style={({ pressed }) => [styles.row, pressed && Platform.OS === 'ios' && styles.pressed]}>
       {Icon ? <Icon size={20} color={colors.primary} /> : null}
       <View style={styles.text}>
         <View style={styles.titleRow}>

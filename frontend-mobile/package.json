@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "expo start",
+    "start:fast": "expo start --no-dev --minify",
     "android": "expo start --android",
     "ios": "expo start --ios",
     "lint": "eslint .",

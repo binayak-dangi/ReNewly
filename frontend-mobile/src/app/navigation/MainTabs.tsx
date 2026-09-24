@@ -37,6 +37,10 @@ export function MainTabs() {
     <Tab.Navigator
       screenOptions={({ route }) => ({
         headerShown: false,
+        // A short sideways slide between tabs instead of an instant swap.
+        animation: 'shift',
+        // Tabs in the background don't re-render until they're shown again.
+        freezeOnBlur: true,
         tabBarActiveTintColor: colors.primary,
         tabBarInactiveTintColor: colors.textMuted,
         tabBarStyle: styles.tabBar,
