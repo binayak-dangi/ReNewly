@@ -37,5 +37,5 @@ You can also open the scripts in SSMS or Azure Data Studio and execute them agai
 
 | Script | Environment | Applied on (UTC) | Applied by | Notes |
 |--------|-------------|------------------|------------|-------|
-| 001 | Local | – | – | Not yet applied |
-| 002 | Local | – | – | Not yet applied |
+| 001 | Local (`localhost`, `RenewlyDb`) | 2026-09-24 | Binayak Dangi | 3 plans: FREE, PRO_MONTHLY, PRO_YEARLY |
+| 002 | Local (`localhost`, `RenewlyDb`) | 2026-09-24 | Binayak Dangi | 13 services with cancellation guides |
