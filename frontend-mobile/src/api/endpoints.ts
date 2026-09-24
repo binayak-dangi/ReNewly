@@ -90,6 +90,7 @@ export const devicesApi = {
 export const catalogApi = {
   list: (params: { search?: string; category?: SubscriptionCategory } = {}) =>
     api.get<CatalogService[]>('/services', params, publicCall),
+  get: (serviceId: string) => api.get<CatalogService>(`/services/${serviceId}`, undefined, publicCall),
   cancellationGuide: (serviceId: string) =>
     api.get<CancellationGuide>(`/services/${serviceId}/cancellation-guide`, undefined, publicCall),
 };

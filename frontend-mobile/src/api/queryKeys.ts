@@ -23,6 +23,7 @@ export const queryKeys = {
     unreadCount: ['notifications', 'unread-count'] as const,
   },
   catalog: (search = '') => ['catalog', search] as const,
+  catalogService: (id: string) => ['catalog', 'service', id] as const,
   plans: ['plans'] as const,
   meta: ['meta'] as const,
 };

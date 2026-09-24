@@ -1,32 +1,30 @@
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import React from 'react';
-import { useAuthStore } from '../../store/authStore';
-import { usePreferencesStore } from '../../store/preferencesStore';
-import { colors, typography } from '../../theme';
+import { AboutScreen } from '../../features/account/screens/AboutScreen';
+import { ChangePasswordScreen } from '../../features/account/screens/ChangePasswordScreen';
+import { DeleteAccountScreen } from '../../features/account/screens/DeleteAccountScreen';
+import { EditProfileScreen } from '../../features/account/screens/EditProfileScreen';
+import { NotificationSettingsScreen } from '../../features/account/screens/NotificationSettingsScreen';
+import { SettingsScreen } from '../../features/account/screens/SettingsScreen';
 import { ForgotPasswordScreen } from '../../features/auth/screens/ForgotPasswordScreen';
 import { LoginScreen } from '../../features/auth/screens/LoginScreen';
 import { RegisterScreen } from '../../features/auth/screens/RegisterScreen';
 import { ResetPasswordScreen } from '../../features/auth/screens/ResetPasswordScreen';
 import { VerifyEmailScreen } from '../../features/auth/screens/VerifyEmailScreen';
 import { WelcomeScreen } from '../../features/auth/screens/WelcomeScreen';
+import { NotificationsScreen } from '../../features/notifications/NotificationsScreen';
+import { PremiumScreen } from '../../features/premium/PremiumScreen';
+import { CancellationAssistanceScreen } from '../../features/subscriptions/screens/CancellationAssistanceScreen';
+import { ServicePickerScreen } from '../../features/subscriptions/screens/ServicePickerScreen';
+import { SubscriptionDetailScreen } from '../../features/subscriptions/screens/SubscriptionDetailScreen';
+import { SubscriptionFormScreen } from '../../features/subscriptions/screens/SubscriptionFormScreen';
+import { useAuthStore } from '../../store/authStore';
+import { usePreferencesStore } from '../../store/preferencesStore';
+import { colors, typography } from '../../theme';
 import { MainTabs } from './MainTabs';
-import { placeholder } from './PlaceholderScreen';
 import type { RootStackParamList } from './types';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
-
-// Stage 6 replaces these placeholders with the real screens.
-const SubscriptionDetailScreen = placeholder('Subscription');
-const SubscriptionFormScreen = placeholder('Add subscription');
-const ServicePickerScreen = placeholder('Choose a service');
-const CancellationAssistanceScreen = placeholder('Cancel subscription');
-const NotificationsScreen = placeholder('Notifications');
-const SettingsScreen = placeholder('Settings');
-const EditProfileScreen = placeholder('Personal information');
-const NotificationSettingsScreen = placeholder('Notification settings');
-const ChangePasswordScreen = placeholder('Change password');
-const DeleteAccountScreen = placeholder('Delete account');
-const PremiumScreen = placeholder('Renewly Pro');
 
 /**
  * Screens are grouped by session state; switching state swaps the whole group, so a signed-out user can
@@ -63,11 +61,12 @@ export function RootNavigator() {
             <Stack.Screen name="SubscriptionDetail" component={SubscriptionDetailScreen} options={{ title: '' }} />
             <Stack.Screen name="CancellationAssistance" component={CancellationAssistanceScreen} options={{ title: 'Cancel subscription' }} />
             <Stack.Screen name="Notifications" component={NotificationsScreen} />
-            <Stack.Screen name="Settings" component={SettingsScreen} />
+            <Stack.Screen name="Settings" component={SettingsScreen} options={{ title: 'Preferences' }} />
             <Stack.Screen name="EditProfile" component={EditProfileScreen} options={{ title: 'Personal information' }} />
             <Stack.Screen name="NotificationSettings" component={NotificationSettingsScreen} options={{ title: 'Notifications' }} />
             <Stack.Screen name="ChangePassword" component={ChangePasswordScreen} options={{ title: 'Change password' }} />
             <Stack.Screen name="DeleteAccount" component={DeleteAccountScreen} options={{ title: 'Delete account' }} />
+            <Stack.Screen name="About" component={AboutScreen} options={{ title: 'About Renewly' }} />
           </Stack.Group>
           <Stack.Group screenOptions={{ presentation: 'modal' }}>
             <Stack.Screen name="SubscriptionForm" component={SubscriptionFormScreen} options={{ title: 'Add subscription' }} />

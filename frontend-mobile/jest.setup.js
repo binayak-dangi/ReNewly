@@ -43,3 +43,10 @@ jest.mock('lucide-react-native', () => {
     },
   );
 });
+
+jest.mock('@react-native-community/datetimepicker', () => {
+  const React = require('react');
+  const { View } = require('react-native');
+  const Picker = props => React.createElement(View, { testID: 'date-picker', ...props });
+  return { __esModule: true, default: Picker, DateTimePickerAndroid: { open: jest.fn(), dismiss: jest.fn() } };
+});

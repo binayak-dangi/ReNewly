@@ -17,3 +17,8 @@ export { CodeInput } from './CodeInput';
 export { FormMessage } from './FormMessage';
 export { toast, ToastHost } from './Toast';
 export { FormTextField } from './FormTextField';
+export { Chip, ChipGroup } from './Chip';
+export { DateField } from './DateField';
+export { SelectField } from './SelectField';
+export type { SelectOption } from './SelectField';
+export { SwitchRow } from './SwitchRow';

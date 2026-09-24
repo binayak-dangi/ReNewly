@@ -22,8 +22,8 @@ export type RootStackParamList = {
   // Signed in
   MainTabs: NavigatorScreenParams<MainTabParamList>;
   SubscriptionDetail: { id: string };
-  /** Add (no id) or edit (id). `serviceId` pre-fills from the catalog. */
-  SubscriptionForm: { id?: string; serviceId?: string };
+  /** Add (no id) or edit (id). `serviceId` pre-fills from the catalog; `serviceName` names a custom one. */
+  SubscriptionForm: { id?: string; serviceId?: string; serviceName?: string };
   ServicePicker: undefined;
   CancellationAssistance: { id: string };
   Notifications: undefined;
@@ -32,6 +32,7 @@ export type RootStackParamList = {
   NotificationSettings: undefined;
   ChangePassword: undefined;
   DeleteAccount: undefined;
+  About: undefined;
   Premium: undefined;
 };
 

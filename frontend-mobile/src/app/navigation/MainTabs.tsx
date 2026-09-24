@@ -1,10 +1,13 @@
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { CalendarDays, ChartPie, CircleUser, House, Layers, LucideIcon } from '../../components/icons';
 import React from 'react';
 import { StyleSheet } from 'react-native';
-import { colors, typography } from '../../theme';
+import { CalendarDays, ChartPie, CircleUser, House, Layers, LucideIcon } from '../../components/icons';
+import { ProfileScreen } from '../../features/account/screens/ProfileScreen';
+import { CalendarScreen } from '../../features/calendar/CalendarScreen';
 import { DashboardScreen } from '../../features/dashboard/DashboardScreen';
-import { placeholder } from './PlaceholderScreen';
+import { InsightsScreen } from '../../features/insights/InsightsScreen';
+import { SubscriptionsScreen } from '../../features/subscriptions/screens/SubscriptionsScreen';
+import { colors, typography } from '../../theme';
 import type { MainTabParamList } from './types';
 
 const Tab = createBottomTabNavigator<MainTabParamList>();
@@ -16,12 +19,6 @@ const icons: Record<keyof MainTabParamList, LucideIcon> = {
   Insights: ChartPie,
   Profile: CircleUser,
 };
-
-// Stage 6 replaces the placeholders with the real screens.
-const SubscriptionsScreen = placeholder('Subscriptions');
-const CalendarScreen = placeholder('Calendar');
-const InsightsScreen = placeholder('Insights');
-const ProfileScreen = placeholder('Profile', { showSignOut: true });
 
 /** Defined outside render so React keeps a stable component type per tab. */
 function tabIcon(name: keyof MainTabParamList) {
